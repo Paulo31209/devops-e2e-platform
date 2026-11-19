@@ -1,0 +1,9 @@
+# Checkov configuration for infra/terraform.
+# Every skipped check needs a written justification.
+skip-check:
+  # Registry modules are pinned with a version constraint and a lock file;
+  # commit-hash pinning only applies to git sources.
+  - CKV_TF_1
+  # The ECR KMS key uses the AWS default key policy (account root only),
+  # which is the recommended baseline for a single-account setup.
+  - CKV2_AWS_64
