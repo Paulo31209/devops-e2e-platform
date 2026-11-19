@@ -16,6 +16,17 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "availability_zones" {
+  description = "Availability zones to spread subnets and nodes across. Must belong to var.region."
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+  validation {
+    condition     = length(var.availability_zones) >= 2 && length(var.availability_zones) <= 4
+    error_message = "Use between 2 and 4 availability zones."
+  }
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
   type        = string

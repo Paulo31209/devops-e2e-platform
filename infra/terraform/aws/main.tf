@@ -1,9 +1,7 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 locals {
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
+  # AZs are pinned explicitly (not discovered at plan time) so the subnet
+  # layout never shifts when AWS adds a new zone to the region.
+  azs = var.availability_zones
 }
 
 # ---------------------------------------------------------------------------
