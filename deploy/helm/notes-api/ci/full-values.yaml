@@ -1,0 +1,15 @@
+# Used by CI to render every optional template.
+autoscaling:
+  enabled: true
+ingress:
+  enabled: true
+  className: nginx
+networkPolicy:
+  enabled: true
+metrics:
+  serviceMonitor:
+    enabled: true
+  prometheusRule:
+    enabled: true
+  grafanaDashboard:
+    enabled: true

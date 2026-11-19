@@ -1,0 +1,12 @@
+apiVersion: v2
+name: notes-api
+description: Notes API - end-to-end DevOps reference project
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/Paulo31209/devops-e2e-platform
+sources:
+  - https://github.com/Paulo31209/devops-e2e-platform
+maintainers:
+  - name: Paulo Itelo
+    url: https://github.com/Paulo31209

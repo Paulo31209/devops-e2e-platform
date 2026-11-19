@@ -1,0 +1,42 @@
+# Argo CD Application: continuously syncs the Helm chart from this repo.
+#   kubectl apply -n argocd -f deploy/argocd/application.yaml
+# Promote a new version by changing image.tag below in a pull request
+# (GitOps: Git is the source of truth, Argo CD reconciles the cluster).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: notes-api
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Paulo31209/devops-e2e-platform.git
+    targetRevision: main
+    path: deploy/helm/notes-api
+    helm:
+      valuesObject:
+        image:
+          tag: main
+          pullPolicy: Always
+        autoscaling:
+          enabled: true
+        networkPolicy:
+          enabled: true
+        metrics:
+          serviceMonitor:
+            enabled: true
+          prometheusRule:
+            enabled: true
+          grafanaDashboard:
+            enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: notes
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

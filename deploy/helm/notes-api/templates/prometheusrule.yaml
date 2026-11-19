@@ -1,0 +1,41 @@
+{{- if .Values.metrics.prometheusRule.enabled }}
+{{- $ns := .Release.Namespace }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "notes-api.fullname" . }}
+  labels:
+    {{- include "notes-api.labels" . | nindent 4 }}
+    {{- with .Values.metrics.prometheusRule.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: notes-api
+      rules:
+        - alert: NotesApiHighErrorRate
+          expr: |
+            sum(rate(http_requests_total{namespace="{{ $ns }}",code=~"5.."}[5m]))
+              / clamp_min(sum(rate(http_requests_total{namespace="{{ $ns }}"}[5m])), 1e-9) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: More than 5% of Notes API requests are failing with 5xx.
+        - alert: NotesApiHighLatency
+          expr: |
+            histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{namespace="{{ $ns }}"}[5m]))) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Notes API p95 latency is above 500ms.
+        - alert: NotesApiDown
+          expr: |
+            absent(up{namespace="{{ $ns }}",service="{{ include "notes-api.fullname" . }}"} == 1)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: No healthy Notes API target is being scraped.
+{{- end }}

@@ -1,0 +1,15 @@
+{{- if .Values.metrics.grafanaDashboard.enabled }}
+# Picked up by the Grafana sidecar shipped with kube-prometheus-stack.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "notes-api.fullname" . }}-dashboard
+  labels:
+    {{- include "notes-api.labels" . | nindent 4 }}
+    {{- with .Values.metrics.grafanaDashboard.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  notes-api.json: |-
+    {{- .Files.Get "dashboards/notes-api.json" | nindent 4 }}
+{{- end }}

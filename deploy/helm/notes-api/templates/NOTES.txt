@@ -1,0 +1,6 @@
+Notes API {{ .Values.image.tag | default .Chart.AppVersion }} deployed as {{ include "notes-api.fullname" . }} in namespace {{ .Release.Namespace }}.
+
+Try it:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "notes-api.fullname" . }} 8080:{{ .Values.service.port }}
+  curl -s localhost:8080/healthz
+  curl -s -X POST localhost:8080/api/v1/notes -d '{"title":"hello"}'
