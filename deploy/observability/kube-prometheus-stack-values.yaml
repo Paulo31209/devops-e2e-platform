@@ -1,0 +1,20 @@
+# Minimal values for prometheus-community/kube-prometheus-stack.
+#   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#   helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+#     -n monitoring --create-namespace -f deploy/observability/kube-prometheus-stack-values.yaml
+prometheus:
+  prometheusSpec:
+    # Pick up ServiceMonitors/PrometheusRules from every namespace,
+    # not only the ones labelled with this Helm release.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    retention: 7d
+
+grafana:
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+
+alertmanager:
+  enabled: true
